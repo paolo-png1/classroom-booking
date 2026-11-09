@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ระบบจองห้องเรียน</title>
+<style>
+:root{--bg:#f7f6f2;--card:#fff;--tx:#1f1f1c;--mu:#6b6a64;--bd:#dcdad2;--ac:#185FA5;--acx:#fff;--ok:#2e7d32;--no:#b3261e;--wa:#9a6700;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1b1b19;--card:#262624;--tx:#ecebe5;--mu:#a3a29a;--bd:#3a3a36;--ac:#85B7EB;--acx:#042C53;--ok:#8bc98f;--no:#f2998f;--wa:#e0b45a}}
+:root[data-theme="dark"]{--bg:#1b1b19;--card:#262624;--tx:#ecebe5;--mu:#a3a29a;--bd:#3a3a36;--ac:#85B7EB;--acx:#042C53;--ok:#8bc98f;--no:#f2998f;--wa:#e0b45a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 system-ui,-apple-system,"Segoe UI","Noto Sans Thai",Tahoma,sans-serif}
+.w{max-width:920px;margin:0 auto;padding:16px}
+h1{font-size:20px;margin:0 0 4px;font-weight:600}
+.sub{color:var(--mu);font-size:13px;margin-bottom:12px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+button,select,input,textarea{font:inherit;color:var(--tx);background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:6px 10px}
+button{cursor:pointer}
+button.p{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+button.on{background:var(--ac);color:var(--acx);border-color:var(--ac)}
+button.d{color:var(--no);border-color:var(--no)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+label{display:flex;flex-direction:column;font-size:13px;color:var(--mu);gap:3px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--bd);vertical-align:top;font-size:14px}
+th{color:var(--mu);font-weight:500}
+.b{display:inline-block;padding:1px 8px;border-radius:99px;font-size:12px;border:1px solid currentColor}
+.pending{color:var(--wa)}.approved{color:var(--ok)}.rejected,.cancelled{color:var(--no)}.active{color:var(--ok)}.maintenance{color:var(--wa)}
+.mu{color:var(--mu)}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:8px 16px;border-radius:99px;opacity:0;transition:opacity .2s;pointer-events:none}
+.st{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}.st .card{flex:1;min-width:120px;margin:0}.st b{font-size:22px;display:block}
+table.gr td.g{height:30px;min-width:34px;padding:0;border:1px solid var(--bd);cursor:pointer}
+table.gr td.f:hover{background:var(--bg)}table.gr td.s{background:var(--ac)}
+table.gr td.pending{background:rgba(224,170,60,.55);cursor:help}table.gr td.approved{background:rgba(70,160,90,.55);cursor:help}
+table.gr td.m{background:repeating-linear-gradient(45deg,var(--bd),var(--bd) 4px,transparent 4px,transparent 8px);cursor:not-allowed}
+.lg{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mu);margin-top:8px}.lg i{display:inline-block;width:12px;height:12px;border:1px solid var(--bd);vertical-align:-2px;margin-right:4px}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:16px}.vc{max-width:380px;width:100%;margin:0}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 0 14px;margin-bottom:6px;border-bottom:1px solid var(--bd)}.nav b{font-size:17px}
+.hero{background:linear-gradient(135deg,#0f3d6b,#185FA5 60%,#2a86c9);color:#fff;border-radius:16px;padding:36px 24px;margin:12px 0 14px}.hero h1{font-size:28px;line-height:1.3;margin:0 0 10px}.hero p{margin:0 0 18px;color:rgba(255,255,255,.88);max-width:520px}
+.hero button.big{background:#fff;color:#0f3d6b;border:none;padding:10px 22px;font-weight:600;font-size:16px}
+.ft{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:14px}.ft .card{margin:0}.ft span{font-size:26px}
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}.rg .card{margin:0;padding:0;overflow:hidden}.rg .tl{background:linear-gradient(135deg,#0f3d6b,#2a86c9);color:#fff;padding:14px;font-size:22px;font-weight:600}.rg .bd{padding:12px;font-size:14px}
+.lgn{max-width:380px;margin:30px auto}.lgn label{margin-bottom:10px}.lgn input{width:100%;box-sizing:border-box}.lgn button.p{width:100%;padding:9px}.er{color:var(--no);font-size:13px;margin-bottom:8px}
+</style>
+</head>
+<body>
+<div class="w"><div id="app"></div></div>
+<div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const uid=()=>'i'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const ST={pending:'รออนุมัติ',approved:'อนุมัติแล้ว',rejected:'ถูกปฏิเสธ',cancelled:'ยกเลิกแล้ว',active:'พร้อมใช้งาน',maintenance:'ปิดปรับปรุง'};
+const H='03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4';
+const SEED=()=>{const t=new Date(Date.now()+864e5-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);return{
+users:[{id:'u1',username:'somchai',passwordHash:H,fullName:'สมชาย ใจดี',role:'user'},{id:'u2',username:'somying',passwordHash:H,fullName:'สมหญิง รักเรียน',role:'user'},{id:'u3',username:'admin1',passwordHash:H,fullName:'ผู้ดูแล ระบบ',role:'admin'}],
+rooms:[{id:'r1',code:'A101',name:'ห้องบรรยาย 1',building:'อาคาร 1',capacity:40,equipment:'โปรเจกเตอร์',status:'active'},{id:'r2',code:'A102',name:'ห้องประชุมเล็ก',building:'อาคาร 1',capacity:15,equipment:'ทีวี',status:'active'},{id:'r3',code:'B201',name:'ห้องคอมพิวเตอร์',building:'อาคาร 2',capacity:30,equipment:'คอมพิวเตอร์ 30 เครื่อง',status:'active'}],
+bookings:[{id:'b1',userId:'u1',roomId:'r1',date:t,start:'09:00',end:'11:00',purpose:'ติวสอบกลางภาค',status:'pending',createdAt:new Date().toISOString()},{id:'b2',userId:'u2',roomId:'r3',date:t,start:'13:00',end:'15:00',purpose:'ประชุมกลุ่มโปรเจกต์',status:'approved',createdAt:new Date().toISOString()}]}};
+const S={users:[],rooms:[],bookings:[],approvals:[]};
+let db=null,mode='local',tab='find',role='user',cur='',pend=null,mt,sel='',voucher=null,page='home',auth='',lerr='';
+const q={date:today(),start:'09:00',end:'10:00',purpose:''};
+const KEY='classroom-demo-v2';
+const saveLocal=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;clearTimeout(mt);mt=setTimeout(()=>t.style.opacity=0,2800)}
+function put(c,id,o){
+  const {id:_,...body}=o;
+  if(db)return db.doc(c+'/'+id).set(body).catch(e=>toast('บันทึกไม่ได้: '+(e.message||e.code)));
+  const a=S[c],i=a.findIndex(x=>x.id===id),r={...body,id};i<0?a.push(r):a[i]=r;saveLocal();render();return Promise.resolve();
+}
+function seed(){const s=SEED();for(const c in s)s[c].forEach(x=>put(c,x.id,x));toast('โหลดข้อมูลตัวอย่างแล้ว')}
+const uName=id=>(S.users.find(u=>u.id===id)||{}).fullName||'-';
+const rOf=id=>S.rooms.find(r=>r.id===id)||{};
+const free=(rid,d,s,e)=>!S.bookings.some(b=>b.roomId===rid&&b.date===d&&['pending','approved'].includes(b.status)&&b.start<e&&b.end>s);
+const badge=s=>`<span class="b ${s}">${ST[s]||s}</span>`;
+
+function book(rid){
+  if(!rid)return toast('กรุณาคลิกช่องว่างในตารางเพื่อเลือกห้อง');
+  if(!cur)return toast('กรุณาเลือกผู้จอง');
+  if(!q.purpose.trim())return toast('กรุณากรอกวัตถุประสงค์การใช้งาน');
+  if(q.end<=q.start)return toast('เวลาสิ้นสุดต้องมากกว่าเวลาเริ่ม');
+  if(!free(rid,q.date,q.start,q.end))return toast('ห้องนี้ถูกจองในช่วงเวลานี้แล้ว');
+  const nb={userId:cur,roomId:rid,date:q.date,start:q.start,end:q.end,purpose:q.purpose.trim(),status:'pending',createdAt:new Date().toISOString()},nid=uid();
+  voucher={...nb,id:nid};sel='';put('bookings',nid,nb);
+  q.purpose='';toast('ส่งคำขอจองแล้ว รอการอนุมัติ');if(db)render();
+}
+function cancel(id,ok){
+  if(!ok){pend='c'+id;return render()}
+  const b=S.bookings.find(x=>x.id===id);if(!b)return;
+  pend=null;put('bookings',id,{...b,status:'cancelled',cancelledAt:new Date().toISOString()});toast('ยกเลิกการจองแล้ว');if(db)render();
+}
+function decide(id,dec,ok){
+  const b=S.bookings.find(x=>x.id===id),ad=S.users.find(u=>u.id===auth&&u.role==='admin');if(!b)return;
+  if(!ad)return toast('ไม่พบผู้ดูแลระบบ');
+  let reason='';
+  if(dec==='rejected'){
+    if(!ok){pend='r'+id;return render()}
+    reason=($('#rs')||{value:''}).value.trim();
+    if(!reason)return toast('ต้องระบุเหตุผลก่อนปฏิเสธ');
+  }
+  pend=null;
+  put('approvals',id,{bookingId:id,adminId:ad.id,decision:dec,reason,decidedAt:new Date().toISOString()});
+  put('bookings',id,{...b,status:dec});toast(dec==='approved'?'อนุมัติแล้ว':'ปฏิเสธคำขอแล้ว');if(db)render();
+}
+function addRoom(){
+  const v=k=>$('#n'+k).value.trim();
+  if(!v('code')||!v('name'))return toast('กรอกรหัสห้องและชื่อห้อง');
+  put('rooms',uid(),{code:v('code'),name:v('name'),building:v('bld'),capacity:+v('cap')||0,equipment:v('eq'),status:'active'});
+  toast('เพิ่มห้องแล้ว');
+}
+function toggleRoom(id){const r=S.rooms.find(x=>x.id===id);if(r)put('rooms',id,{...r,status:r.status==='active'?'maintenance':'active'})}
+const setQ=(k,v)=>{q[k]=v};
+const setTab=t=>{tab=t;pend=null;render()};
+async function sha(s){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function login(){
+  const u=$('#lu').value.trim(),h=await sha($('#lp').value);
+  const f=S.users.find(x=>x.username===u&&x.passwordHash===h);
+  if(!f){lerr='ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';return render()}
+  auth=cur=f.id;role=f.role;lerr='';tab='find';sel='';render();
+}
+function logout(){auth=cur='';role='user';page='home';pend=null;voucher=null;render()}
+
+const HRS=[8,9,10,11,12,13,14,15,16,17,18,19],pad=h=>String(h).padStart(2,'0')+':00';
+function cellClick(rid,h){
+  const r=rOf(rid);if(r.status!=='active')return toast('ห้องนี้ปิดปรับปรุง');
+  const bk=S.bookings.find(b=>b.roomId===rid&&b.date===q.date&&['pending','approved'].includes(b.status)&&b.start<pad(h+1)&&b.end>pad(h));
+  if(bk)return toast(uName(bk.userId)+' · '+bk.start+'-'+bk.end+' · '+bk.purpose);
+  sel=rid;q.start=pad(h);q.end=pad(h+1);render();
+}
+function voucherHtml(){
+  if(!voucher)return '';
+  const v=voucher,r=rOf(v.roomId),row=(a,b)=>`<tr><th>${a}</th><td>${b}</td></tr>`;
+  return `<div class="ov" onclick="if(event.target===this){voucher=null;render()}"><div class="card vc"><div class="mu" style="font-size:12px">Booking voucher · ระบบจองห้องเรียน</div><h2 style="margin:4px 0 8px">#${v.id.slice(-6).toUpperCase()}</h2><table>${row('ผู้จอง',esc(uName(v.userId)))}${row('ห้อง',esc(r.code+' '+r.name))}${row('วันที่',v.date)}${row('เวลา',v.start+' - '+v.end)}${row('วัตถุประสงค์',esc(v.purpose))}${row('สถานะ',badge('pending'))}</table><div class="mu" style="margin:8px 0">แสดงเอกสารนี้ต่อเจ้าหน้าที่ประจำอาคาร</div><button onclick="window.print()">พิมพ์</button> <button class="p" onclick="voucher=null;render()">เสร็จสิ้น</button></div></div>`;
+}
+function findView(){
+  const rooms=S.rooms.filter(r=>!q.cap||r.capacity>=q.cap),r0=rOf(sel);
+  const day=S.bookings.filter(b=>b.date===q.date&&['pending','approved'].includes(b.status)).length;
+  const cell=(r,h)=>{
+    if(r.status!=='active')return `<td class="g m" title="ปิดปรับปรุง"></td>`;
+    const bk=S.bookings.find(b=>b.roomId===r.id&&b.date===q.date&&['pending','approved'].includes(b.status)&&b.start<pad(h+1)&&b.end>pad(h));
+    const on=sel===r.id&&q.start<=pad(h)&&q.end>pad(h);
+    return `<td class="g ${bk?bk.status:on?'s':'f'}" onclick="cellClick('${r.id}',${h})"></td>`;
+  };
+  return `<div class="st"><div class="card"><span class="mu">ห้องทั้งหมด</span><b>${S.rooms.length}</b></div><div class="card"><span class="mu">พร้อมใช้งาน</span><b>${S.rooms.filter(r=>r.status==='active').length}</b></div><div class="card"><span class="mu">การจองในวันที่เลือก</span><b>${day}</b></div></div>
+  <div class="card"><div class="row"><label>ตารางการใช้ห้อง · วันที่<input type="date" value="${q.date}" onchange="setQ('date',this.value);render()"></label>
+    <label>ความจุ<select onchange="setQ('cap',+this.value);render()">${[[0,'ทุกความจุ'],[10,'10 ที่นั่งขึ้นไป'],[30,'30 ที่นั่งขึ้นไป']].map(o=>`<option value="${o[0]}"${(q.cap||0)===o[0]?' selected':''}>${o[1]}</option>`).join('')}</select></label></div>
+    <div class="tw" style="margin-top:10px"><table class="gr"><tr><th></th>${HRS.map(h=>`<th style="padding:4px;text-align:center;font-size:12px">${pad(h).slice(0,2)}</th>`).join('')}</tr>
+    ${rooms.map(r=>`<tr><th style="white-space:nowrap">${esc(r.code)}<div class="mu" style="font-size:12px;font-weight:400">${r.capacity} ที่นั่ง</div></th>${HRS.map(h=>cell(r,h)).join('')}</tr>`).join('')}</table></div>
+    <div class="lg"><span><i style="background:rgba(70,160,90,.55)"></i>จองแล้ว (อนุมัติ)</span><span><i style="background:rgba(224,170,60,.55)"></i>รออนุมัติ</span><span><i style="background:var(--ac)"></i>ช่วงที่คุณเลือก</span><span><i></i>ว่าง · คลิกเพื่อเลือก</span><span>ปิดปรับปรุง = ลายเฉียง</span></div></div>
+  <div class="card"><b>ใบคำขอจอง</b><div class="mu" style="margin:4px 0 10px">ห้องที่เลือก: ${sel?esc(r0.code+' '+r0.name+' · '+r0.building):'คลิกช่องว่างในตารางเพื่อเลือกห้องและเวลาเริ่ม'}</div>
+    <div class="row"><label>เริ่ม<input type="time" value="${q.start}" onchange="setQ('start',this.value);render()"></label><label>สิ้นสุด<input type="time" value="${q.end}" onchange="setQ('end',this.value);render()"></label>
+    <label style="flex:1;min-width:200px">วัตถุประสงค์การใช้งาน<input value="${esc(q.purpose)}" oninput="setQ('purpose',this.value)" placeholder="เช่น ติวสอบ ประชุมกลุ่ม"></label>
+    <button class="p" onclick="book(sel)">ยืนยันคำขอจอง</button></div></div>`;
+}
+function view(){
+  if(tab==='find')return findView();
+  if(tab==='mine'){
+    const a=S.bookings.filter(b=>b.userId===cur).sort((x,y)=>y.date.localeCompare(x.date)||y.start.localeCompare(x.start));
+    return `<div class="card tw"><table><tr><th>วันที่</th><th>เวลา</th><th>ห้อง</th><th>วัตถุประสงค์</th><th>สถานะ</th><th></th></tr>
+      ${a.map(b=>`<tr><td>${b.date}</td><td>${b.start}-${b.end}</td><td>${esc(rOf(b.roomId).code)}</td><td>${esc(b.purpose)}</td><td>${badge(b.status)}</td><td>${['pending','approved'].includes(b.status)?(pend==='c'+b.id?`<button class="d" onclick="cancel('${b.id}',1)">ยืนยันยกเลิก</button> <button onclick="pend=null;render()">ไม่</button>`:`<button class="d" onclick="cancel('${b.id}')">ยกเลิกการจอง</button>`):''}</td></tr>`).join('')||'<tr><td colspan="6" class="mu">ยังไม่มีรายการจอง</td></tr>'}</table></div>`;
+  }
+  if(tab==='appr'){
+    const a=S.bookings.filter(b=>b.status==='pending').sort((x,y)=>x.date.localeCompare(y.date));
+    return `<div class="card tw"><table><tr><th>ผู้จอง</th><th>ห้อง</th><th>วันที่</th><th>เวลา</th><th>วัตถุประสงค์</th><th></th></tr>
+      ${a.map(b=>`<tr><td>${esc(uName(b.userId))}</td><td>${esc(rOf(b.roomId).code)}</td><td>${b.date}</td><td>${b.start}-${b.end}</td><td>${esc(b.purpose)}</td><td>${pend==='r'+b.id?`<input id="rs" placeholder="เหตุผลที่ปฏิเสธ"> <button class="d" onclick="decide('${b.id}','rejected',1)">ยืนยัน</button> <button onclick="pend=null;render()">ไม่</button>`:`<button class="p" onclick="decide('${b.id}','approved')">อนุมัติ</button> <button class="d" onclick="decide('${b.id}','rejected')">ปฏิเสธ</button>`}</td></tr>`).join('')||'<tr><td colspan="6" class="mu">ไม่มีคำขอที่รออนุมัติ</td></tr>'}</table></div>`;
+  }
+  return `<div class="card"><div class="row">
+      <label>รหัสห้อง<input id="ncode" size="6"></label><label>ชื่อห้อง<input id="nname" size="14"></label>
+      <label>อาคาร<input id="nbld" size="8"></label><label>ความจุ<input id="ncap" type="number" style="width:80px"></label>
+      <label>อุปกรณ์<input id="neq" size="14"></label><button class="p" onclick="addRoom()">เพิ่มห้อง</button></div></div>
+    <div class="card tw"><table><tr><th>รหัส</th><th>ชื่อห้อง</th><th>อาคาร</th><th>ความจุ</th><th>อุปกรณ์</th><th>สถานะ</th><th></th></tr>
+      ${S.rooms.map(r=>`<tr><td>${esc(r.code)}</td><td>${esc(r.name)}</td><td>${esc(r.building)}</td><td>${r.capacity}</td><td>${esc(r.equipment)}</td><td>${badge(r.status)}</td><td><button onclick="toggleRoom('${r.id}')">สลับสถานะ</button></td></tr>`).join('')}</table></div>`;
+}
+const goto=p=>{page=p;lerr='';render()};
+function homeView(){
+  const act=S.rooms.filter(r=>r.status==='active');
+  return `<div class="nav"><b>🏫 ห้องเรียนออนไลน์</b><button class="p" onclick="goto('login')">เข้าสู่ระบบ</button></div>
+  <div class="hero"><h1>จองห้องเรียนได้ง่าย<br>ไม่ต้องเดินไปถามใคร</h1><p>ดูตารางห้องว่างรายวัน เลือกช่วงเวลาที่ต้องการ แล้วส่งคำขอจอง ผู้ดูแลอนุมัติและติดตามสถานะได้ในระบบเดียว</p><button class="big" onclick="goto('login')">เริ่มจองห้อง</button></div>
+  <div class="st"><div class="card"><span class="mu">ห้องพร้อมใช้งาน</span><b>${act.length}</b></div><div class="card"><span class="mu">จองทั้งหมดในระบบ</span><b>${S.bookings.length}</b></div></div>
+  <div class="ft"><div class="card"><span>📅</span><b style="display:block">ดูห้องว่างรายวัน</b><span class="mu" style="font-size:14px">ตารางรายชั่วโมง คลิกช่องว่างเพื่อเลือกห้องและเวลา</span></div><div class="card"><span>✅</span><b style="display:block">ระบบกันจองซ้อน</b><span class="mu" style="font-size:14px">ตรวจเวลาทับกันให้อัตโนมัติก่อนบันทึก</span></div><div class="card"><span>🔔</span><b style="display:block">ติดตามสถานะ</b><span class="mu" style="font-size:14px">ดูผลอนุมัติ ยกเลิกการจองได้เอง</span></div></div>
+  <h3 style="margin:6px 0 10px">ห้องของเรา</h3><div class="rg">${act.map(r=>`<div class="card"><div class="tl">${esc(r.code)}</div><div class="bd"><b>${esc(r.name)}</b><div class="mu">${esc(r.building)} · ${r.capacity} ที่นั่ง</div><div class="mu">${esc(r.equipment)}</div></div></div>`).join('')||'<div class="mu">ยังไม่มีข้อมูลห้อง</div>'}</div>`;
+}
+function loginView(){
+  const need=!S.users.some(u=>u.username);
+  return `<div class="nav"><b>🏫 ห้องเรียนออนไลน์</b><button onclick="goto('home')">← หน้าแรก</button></div>
+  <div class="card lgn"><h2 style="margin:0 0 14px">เข้าสู่ระบบ</h2>
+  <label>ชื่อผู้ใช้<input id="lu" autocomplete="username"></label><label>รหัสผ่าน<input id="lp" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')login()"></label>
+  ${lerr?`<div class="er">${lerr}</div>`:''}<button class="p" onclick="login()">เข้าสู่ระบบ</button>
+  <div class="mu" style="font-size:13px;margin-top:12px">บัญชีทดลอง · ผู้ใช้: somchai / 1234 · แอดมิน: admin1 / 1234<br>ระบบนี้เป็นเดโม่ ไม่ควรใช้รหัสผ่านจริง</div>
+  ${need?'<button style="margin-top:10px" onclick="seed()">โหลดข้อมูลตัวอย่าง</button>':''}</div>`;
+}
+function render(){
+  if(!auth){$('#app').innerHTML=page==='login'?loginView():homeView();return}
+  const me=S.users.find(u=>u.id===auth)||{};
+  const T=[['find','จองห้อง'],['mine','การจองของฉัน']];
+  if(role==='admin')T.push(['appr','อนุมัติคำขอ'],['rooms','จัดการห้อง']);
+  if(!T.find(t=>t[0]===tab))tab='find';
+  $('#app').innerHTML=`<div class="nav"><b>🏫 ห้องเรียนออนไลน์</b><span>${esc(me.fullName)} <span class="b ${role==='admin'?'approved':'active'}">${role==='admin'?'แอดมิน':'ผู้ใช้'}</span> <button onclick="logout()">ออกจากระบบ</button></span></div>
+    <div class="sub">${mode==='shared'?'ข้อมูลใช้ร่วมกันทุกคนที่เปิดลิงก์':'โหมดเดโม่ ข้อมูลเก็บในเบราว์เซอร์ของคุณเท่านั้น'}</div>
+    <div class="tabs">${T.map(t=>`<button class="${tab===t[0]?'on':''}" onclick="setTab('${t[0]}')">${t[1]}</button>`).join('')}</div>${view()}${voucherHtml()}`;
+}
+async function init(){
+  render();
+  let d=null;
+  try{if(window.claude&&claude.use)d=await Promise.race([claude.use('db'),new Promise(r=>setTimeout(()=>r(null),4000))])}catch(e){}
+  if(d){
+    db=d;mode='shared';
+    Object.keys(S).forEach(c=>db.collection(c).onSnapshot(s=>{S[c]=s.docs.map(x=>({...x.data(),id:x.id}));render()},()=>{}));
+  }else{
+    try{const j=JSON.parse(localStorage.getItem(KEY)||'null');if(j)Object.assign(S,j)}catch(e){}
+    if(!S.users.length)Object.assign(S,SEED(),{approvals:[]}),saveLocal();
+  }
+  render();
+}
+init();
+</script>
+</body>
+</html>
